@@ -2,52 +2,80 @@ import React, { Component } from "react";
 import { Button, Form, FormGroup, Label, Input } from "reactstrap";
 import { Link, withRouter} from "react-router-dom";
 import { connect } from 'react-redux';
-import { signIn } from '../../redux/action/adminActions';
+import { signInAdmin } from '../../redux/action/adminActions';
+import { getRole } from "../../redux/action/mainActions";
+import history from '../../history'
 import axios from 'axios'
 
 class SignInAdmin extends Component {
-  constructor(props) {
-    super(props)
-  
-    this.state = {
-       username: '',
-       password: ''
+  componentDidMount(){
+    let role = localStorage.getItem('role')
+    if ( role === 'admin' ) {
+      history.push('/admin')
+    } else if (role === 'member') {
+      history.push('/')
+    } else if (role === 'admin') {
+      history.push('/')
     }
+
+    window.scrollTo(0, 0);
+    document.title= "Login Admin - RelaOne"
+}
+
+constructor(props) {
+  super(props)
+
+  this.state = {
+     username: '',
+     password: ''
+  }
+}
+
+onChange = (e) => {
+  this.setState({
+      [e.target.name]: e.target.value
+  })
+}
+
+onSubmit = (e) => {
+  e.preventDefault();
+
+  let days = 7;
+  let now = new Date().getTime();
+  let setupTime = localStorage.getItem('setupTime');
+  if (setupTime == null) {
+      localStorage.setItem('setupTime', now)
+  } else {
+      if(now-setupTime > days*24*60*60*1000) {
+          localStorage.clear()
+      }
   }
   
-  onChange = e => this.setState({ [e.target.name]: e.target.value });
-
-  onSubmit = e => {
-    e.preventDefault();
-    this.props.signIn(this.state.username, this.state.password)
-    this.setState({
-      username: "",
-      password: ""
-    });
-  }
-
-  componentDidUpdate() {
-    console.log(this.props.role)
-    this.props.role === 'admin' && this.props.history.push('/dashboard')
-  }
+  this.props.signInAdmin(this.state.username, this.state.password)
+  this.setState({
+    username: '',
+    password: ''
+  });
+}
 
   render() {
+    this.props.role === "admin" && this.props.history.push("/admin")
 
     return (
       <div className="auth-container auth-admin">
         <div className="auth-banner" />
         <div className="container auth-page">
           <div className="auth-page-content">
-            <h1 className="text-center mb-3">Sign In | Admin</h1>
+            <h1 className="text-center mb-3">Admin Panel</h1>
             <Form onSubmit={this.onSubmit}>
               <FormGroup>
-                <Label for="emailStudent">Email</Label>
+                <Label for="emailStudent">Username</Label>
                 <Input
                   required
                   type="text"
                   name="username"
                   id="emailStudent"
-                  placeholder="type your email"
+                  placeholder="type your username"
                   onChange={this.onChange}
                   value={this.state.username}
                 />
@@ -66,12 +94,6 @@ class SignInAdmin extends Component {
               </FormGroup>
               <div className="text-center">
                 <Button color="primary">Sign In</Button>
-                <p className="mt-3">
-                  Doesn't have an account?{" "}
-                  <Link to="/signup">
-                    Sign Up
-                  </Link>{" "}
-                </p>
               </div>
             </Form>
           </div>
@@ -88,24 +110,14 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = dispatch => {
-  return{
-    signIn: (username, password) => {
-      axios
-        .post("https://relaonebinar.herokuapp.com/api/admin/login", {
-          'username':username,
-          'password':password
-        })
-        .then(res => {
-          console.log(res);
-          dispatch(signIn(username, password, res.data.message));
-          console.log(this.props)
-
-        })
-        .catch(err => {
-          console.log(err.response);
-        });
+  return {
+    signInAdmin: (username, password) => {
+      dispatch(signInAdmin(username, password));
+    },
+    getRole: () => {
+      dispatch(getRole())
     }
-  }
-}
+  };
+};
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(SignInAdmin)) ;

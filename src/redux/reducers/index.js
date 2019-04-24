@@ -1,8 +1,17 @@
 import { combineReducers } from "redux";
-import adminReducer from "./adminReducer";
+import user from "./user";
 import authReducer from "./authReducer";
+import article from "./article";
+import organization from "./organization"
+import event from "./event"
+import skillset from "./skillset"
+
 
 export default combineReducers({
-  admin: adminReducer,
-  auth: authReducer
+  user: user,
+  auth: authReducer,
+  article: article,
+  organization: organization,
+  event: event,
+  skillset: skillset
 });

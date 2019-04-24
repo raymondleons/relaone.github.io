@@ -1,16 +1,17 @@
 import React, { Component } from "react";
 import { BrowserRouter as Router, Route } from "react-router-dom";
-
+import 'font-awesome/css/font-awesome.min.css';
 import "./assets/css/themify-icons.css";
 
-// import Footer from "./layouts/Footer";
-// import MainPage from "./pages/main";
 import AdminPage from "./pages/admin";
 import SignInAdmin from "./pages/admin/SignInAdmin"
-// import SignInMentor from "./pages/mentor/SignInPage"
-// import SignUpMentor from "./pages/mentor/SignUpPage"
-// import MentorPage from "./pages/mentor/MentorDashboard"
-
+import User from './pages/admin/user/User'
+import Article from './pages/admin/article/Article'
+import Organization from './pages/admin/organization/Organization'
+import Event from './pages/admin/event/Event'
+import SkillSet from './pages/admin/skillset/SkillSet'
+import EditProfile from './pages/admin/user/EditProfile'
+import CreateNewUser from './pages/admin/user/CreateNewUser'
 
 
 
@@ -21,14 +22,15 @@ class App extends Component {
     
     return (
       <Router>
-        {/* <Route exact path="/signin-mentor" component={SignInMentor} />
-        <Route exact path="/signup-mentor" component={SignUpMentor} /> */}
-        {/* <Route exact path="/mentor" component={MentorPage}/> */}
-
-        <Route exact path="/signin-admin" component={SignInAdmin} />
+        <Route exact path="/" component={SignInAdmin} />
         <Route exact path="/admin" component={AdminPage}/>
-        {/* <Route path="/" component={MainPage}/> */}
-        {/* <Footer /> */}
+        <Route exact path="/admin/users" component={User}/>
+        <Route exact path="/admin/users/create" component={CreateNewUser}/>
+        <Route exact path="/admin/article" component={Article}/>
+        <Route exact path="/admin/organization" component={Organization}/>
+        <Route exact path="/admin/event" component={Event}/>
+        <Route exact path="/admin/skill-sett" component={SkillSet}/>
+        <Route exact path="/admin/users/edit/:user_id" component={EditProfile}/>
       </Router>
     );
   }
